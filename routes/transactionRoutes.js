@@ -27,9 +27,14 @@ router.get("/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
 
-    if (isNaN(parseInt(userId))) {
-      return res.status(400).json({ message: "Invalid transaction ID" });
+    const userIdRegex = /^user_[a-zA-Z0-9_-]{10,}$/;
+    if (!userIdRegex.test(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
+
+    // if (isNaN(parseInt(userId))) {
+    //   return res.status(400).json({ message: "Invalid transaction ID" });
+    // }
 
     const transactions =
       await sql`SELECT * FROM transaction WHERE user_id = ${userId} ORDER BY created_at DESC`;
